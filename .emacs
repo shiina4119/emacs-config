@@ -15,7 +15,7 @@
  )
 
 ;; Package install
-(setq package-list '(markdown-mode lsp-mode lsp-ui projectile lsp-ivy flycheck company vertico vterm magit zenburn-theme all-the-icons))
+(setq package-list '(markdown-mode lsp-mode lsp-ui projectile treemacs lsp-ivy flycheck company vertico vterm magit zenburn-theme all-the-icons))
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
@@ -64,6 +64,10 @@
 (global-set-key (kbd "C-`") #'projectile-run-vterm)
 (global-set-key [f9] 'projectile-compile-project)
 (global-set-key [f10] 'projectile-run-project)
+
+;; treemacs config
+(global-set-key [f8] 'treemacs)
+(treemacs-project-follow-mode t)
 
 (provide '.emacs)
 ;;; .emacs ends here

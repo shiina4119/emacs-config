@@ -1,5 +1,6 @@
 ;;; .emacs --- Initialization file for Emacs  -*- lexical-binding: t; -*-
 ;;; Commentary:
+;;; Code:
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -15,7 +16,7 @@
  )
 
 ;; Package install
-(setq package-list '(markdown-mode lsp-mode lsp-ui projectile treemacs lsp-ivy flycheck company vertico vterm magit zenburn-theme all-the-icons))
+(setq package-list '(markdown-mode lsp-mode lsp-ui lsp-ivy flycheck company vertico zenburn-theme nerd-icons-dired nerd-icons-ibuffer))
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
@@ -45,29 +46,15 @@
 (setq confirm-kill-emacs #'yes-or-no-p)
 (setq inhibit-startup-screen t)
 (global-display-line-numbers-mode t)
-(auto-save-visited-mode t)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 (electric-pair-mode t)
 (load-theme 'zenburn t)
 (vertico-mode t)
-(projectile-mode t)
-
-;; magit
-(global-set-key (kbd "C-c g") #'magit-status) ;; Bind the `magit-status' command to a convenient key
 
 ;; auto load lsp in major modes
 (add-hook 'rust-mode-hook #'lsp) ;; LSP and `rust-mode'
-
-;; projectile-mode config
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-(global-set-key (kbd "C-`") #'projectile-run-vterm)
-(global-set-key [f9] 'projectile-compile-project)
-(global-set-key [f10] 'projectile-run-project)
-
-;; treemacs config
-(global-set-key [f8] 'treemacs)
-(treemacs-project-follow-mode t)
 
 (provide '.emacs)
 ;;; .emacs ends here

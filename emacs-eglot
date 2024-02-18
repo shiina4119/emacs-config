@@ -15,7 +15,6 @@
  ;; If there is more than one, they won't work right.
  )
 
-
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
@@ -65,7 +64,7 @@
   :config
   (which-key-mode))
 
-(use-package zenburn-theme
+(use-package zenburn-theme ; zenburn theme
   :config
   (load-theme 'zenburn t))
 
@@ -83,15 +82,23 @@
 (use-package eglot)
 
 (use-package breadcrumb
-  :hook (eglot-managed-p . breadcrumb-local-mode))
+  :hook (eglot--managed-mode . breadcrumb-local-mode))
 
 (use-package flymake)
 
+(use-package sideline-flymake)
+
+(use-package sideline
+  :hook (flymake-mode  . sideline-mode)
+  :init
+  (setq sideline-flymake-display-mode 'line)
+  (setq sideline-backends-right '(sideline-flymake)))
+
 (use-package yasnippet
-  :hook (eglot-managed-p . yas-minor-mode))
+  :hook (eglot--managed-mode . yas-minor-mode))
 
 (use-package company
-  :hook (eglot-managed-p . company-mode))
+  :hook (eglot--managed-mode . company-mode))
 
 
 (provide '.emacs)

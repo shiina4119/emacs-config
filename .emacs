@@ -1,5 +1,6 @@
 ;;; .emacs --- Initialization file for Emacs  -*- lexical-binding: t; -*-
 ;;; Commentary:
+;;; vertico, which-key, lsp features (eglot, flymake, sideline, company, yasnippet), nerd-icons, themes (zenburn, spacemacs, monokai)
 ;;; Code:
 
 (custom-set-variables
@@ -15,20 +16,21 @@
  ;; If there is more than one, they won't work right.
  )
 
-;; Package install
-(setq package-list '(markdown-mode lsp-mode lsp-ui lsp-ivy flycheck company vertico zenburn-theme nerd-icons-dired nerd-icons-ibuffer))
-
+(require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-			 ("melpa" . "https://melpa.org/packages/")))
-			 
+			 ("melpa" . "https://melpa.org/packages/")
+			 ("org" . "https://orgmode.org/elpa/")))
+
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
 
-(dolist (package package-list)
-  (unless (package-installed-p package)
-    (package-install package)))
+
+(require 'use-package)
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+
 
 ;; Configure automatic backups
 (setq
@@ -40,21 +42,81 @@
  kept-old-versions 2
  version-control t)
 
-;; Misc.
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (setq-default frame-title-format '("%f [" mode-name "]"))
+(setq window-resize-pixelwise t)
+(setq frame-resize-pixelwise t)
 (setq confirm-kill-emacs #'yes-or-no-p)
-(setq inhibit-startup-screen t)
+(setq inhibit-startup-message t)
+(scroll-bar-mode -1)        ; Disable visible scrollbar
+(tool-bar-mode -1)          ; Disable the toolbar
+(set-fringe-mode 10)        ; Give some breathing room
+(column-number-mode)
 (global-display-line-numbers-mode t)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(electric-pair-mode t)
-(load-theme 'zenburn t)
-(vertico-mode t)
+(electric-pair-mode t)      ; auto-pair functionality
 
-;; auto load lsp in major modes
-(add-hook 'rust-mode-hook #'lsp) ;; LSP and `rust-mode'
+
+(use-package vertico
+  :init
+  (vertico-mode))
+
+(use-package which-key
+  :config
+  (which-key-mode))
+
+(use-package zenburn-theme ; zenburn theme
+  :config
+  (load-theme 'zenburn t))
+
+(use-package spacemacs-theme)
+
+(use-package monokai-theme)
+
+
+;; major modes
+(use-package markdown-mode
+  :mode
+  ("README\\.md\\'" . gfm-mode))
+
+
+;; nerd-icons
+(use-package nerd-icons-dired
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
+(use-package nerd-icons-ibuffer
+  :hook
+  (ibuffer-mode . nerd-icons-ibuffer-mode))
+
+
+;; LSP
+(use-package eglot
+  :bind
+  ("C-c l" . eglot)
+  :config
+  (use-package breadcrumb
+    :config
+    (breadcrumb-local-mode)))
+    
+(use-package flymake)
+
+(use-package sideline-flymake
+  :config
+  (use-package sideline
+    :hook (flymake-mode  . sideline-mode)
+    :init
+    (setq sideline-flymake-display-mode 'line)
+    (setq sideline-backends-right '(sideline-flymake))))
+
+(use-package yasnippet
+  :hook
+  (prog-mode . yas-minor-mode))
+
+(use-package company
+  :hook
+  (prog-mode . company-mode))
+
 
 (provide '.emacs)
 ;;; .emacs ends here

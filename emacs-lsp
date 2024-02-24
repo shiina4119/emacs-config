@@ -1,5 +1,6 @@
 ;;; .emacs --- Initialization file for Emacs  -*- lexical-binding: t; -*-
 ;;; Commentary:
+;;; vertico, which-key, lsp features (lsp-mode, lsp-ui, flycheck company, yasnippet), nerd-icons, themes (zenburn, spacemacs, monokai)
 ;;; Code:
 
 (custom-set-variables
@@ -7,7 +8,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(package-selected-packages
+   '(yasnippet-snippets yasnippet rust-mode flycheck company lsp-ui lsp-mode nerd-icons-ibuffer nerd-icons-dired markdown-mode subatomic-theme monokai-theme spacemacs-theme zenburn-theme which-key vertico)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -25,9 +27,11 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
+
 (require 'use-package)
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
+
 
 ;; Configure automatic backups
 (setq
@@ -40,18 +44,18 @@
  version-control t)
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
-(setq-default frame-title-format '("%f [" mode-name "]"))
-(setq window-resize-pixelwise t)
-(setq frame-resize-pixelwise t)
+(setq-default frame-title-format '("coommacs - [" mode-name "]"))
 (setq confirm-kill-emacs #'yes-or-no-p)
 (setq inhibit-startup-message t)
-(scroll-bar-mode -1)        ; Disable visible scrollbar
-(tool-bar-mode -1)          ; Disable the toolbar
-(set-fringe-mode 10)        ; Give some breathing room
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
 (column-number-mode)
 (global-display-line-numbers-mode t)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(electric-pair-mode t)      ; auto-pair functionality
+(electric-pair-mode t)
+(pixel-scroll-precision-mode)
+
 
 (use-package vertico
   :init
@@ -61,23 +65,22 @@
   :config
   (which-key-mode))
 
-(use-package zenburn-theme ; zenburn theme
+(use-package zenburn-theme)
+
+(use-package spacemacs-theme
   :config
-  (load-theme 'zenburn t))
+  (load-theme 'spacemacs-dark t))
 
-;; LSP mode - lsp-mode, lsp-ui, flycheck, company
-(use-package lsp-mode
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook ((lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
+(use-package monokai-theme)
 
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode))
+(use-package subatomic-theme)
 
-(use-package flycheck)
 
-(use-package company)
+;; major modes
+(use-package markdown-mode
+  :mode
+  ("README\\.md\\'" . gfm-mode))
+
 
 ;; nerd-icons
 (use-package nerd-icons-dired
@@ -85,7 +88,35 @@
   (dired-mode . nerd-icons-dired-mode))
 
 (use-package nerd-icons-ibuffer
-  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+  :hook
+  (ibuffer-mode . nerd-icons-ibuffer-mode))
+
+
+;; LSP
+(use-package lsp-mode
+  :bind
+  ("C-c l" . lsp)
+  :hook
+  (lsp-mode . lsp-enable-which-key-integration)
+  :commands lsp)
+
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :hook
+  (lsp-mode . lsp-ui-mode))
+
+(use-package flycheck
+  :hook
+  (lsp-mode . flycheck-mode))
+
+(use-package company
+  :hook
+  (prog-mode . company-mode))
+
+(use-package yasnippet
+  :hook
+  (prog-mode . yas-minor-mode))
+
 
 (provide '.emacs)
 ;;; .emacs ends here

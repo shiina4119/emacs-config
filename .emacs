@@ -43,18 +43,18 @@
  version-control t)
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
-(setq-default frame-title-format '("%f [" mode-name "]"))
-(setq window-resize-pixelwise t)
-(setq frame-resize-pixelwise t)
+(setq-default frame-title-format '("coommacs - [" mode-name "]"))
 (setq confirm-kill-emacs #'yes-or-no-p)
 (setq inhibit-startup-message t)
-(scroll-bar-mode -1)        ; Disable visible scrollbar
-(tool-bar-mode -1)          ; Disable the toolbar
-(set-fringe-mode 10)        ; Give some breathing room
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+;; (set-fringe-mode 10)
 (column-number-mode)
 (global-display-line-numbers-mode t)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (electric-pair-mode t)      ; auto-pair functionality
+(pixel-scroll-precision-mode)
 
 
 (use-package vertico
@@ -65,13 +65,15 @@
   :config
   (which-key-mode))
 
-(use-package zenburn-theme ; zenburn theme
+(use-package zenburn-theme)
+  
+(use-package spacemacs-theme
   :config
-  (load-theme 'zenburn t))
-
-(use-package spacemacs-theme)
+  (load-theme 'spacemacs-dark t))
 
 (use-package monokai-theme)
+
+(use-package subatomic-theme)
 
 
 ;; major modes
@@ -97,7 +99,7 @@
   :config
   (use-package breadcrumb
     :config
-    (breadcrumb-local-mode)))
+    (breadcrumb-mode)))
     
 (use-package flymake)
 

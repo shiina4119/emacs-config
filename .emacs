@@ -8,13 +8,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+)
 
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -32,28 +32,17 @@
 (setq use-package-always-ensure t)
 
 
-;; Configure automatic backups
-(setq
- backup-by-copying t ; don't clobber symlinks
- backup-directory-alist
- '(("." . "~/.emacsbackups/")) ; don't litter my fs tree
- delete-old-versions t
- kept-new-versions 6
- kept-old-versions 2
- version-control t)
-
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-(setq-default frame-title-format '("coommacs - [" mode-name "]"))
+(add-to-list 'default-frame-alist '(fullscreen . maximized)) 
+(setq-default frame-title-format '("deezmacs - [" mode-name "]"))
 (setq confirm-kill-emacs #'yes-or-no-p)
 (setq inhibit-startup-message t)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-;; (set-fringe-mode 10)
 (column-number-mode)
 (global-display-line-numbers-mode t)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(electric-pair-mode t)      ; auto-pair functionality
+(electric-pair-mode t)
 (pixel-scroll-precision-mode)
 
 
@@ -65,21 +54,31 @@
   :config
   (which-key-mode))
 
-(use-package zenburn-theme)
-  
-(use-package spacemacs-theme
+(use-package zenburn-theme
   :config
-  (load-theme 'spacemacs-dark t))
+  (load-theme 'zenburn))
+
+(use-package spacemacs-theme)
 
 (use-package monokai-theme)
 
 (use-package subatomic-theme)
+
+(use-package catppuccin-theme)
+  ;; :init
+  ;; (setq catppuccin-flavor 'macchiato)
+  ;; :config
+  ;; (load-theme 'catppuccin t))
 
 
 ;; major modes
 (use-package markdown-mode
   :mode
   ("README\\.md\\'" . gfm-mode))
+
+(use-package rust-mode)
+
+(use-package js2-mode)
 
 
 ;; nerd-icons
@@ -93,31 +92,56 @@
 
 
 ;; LSP
-(use-package eglot
+(use-package lsp-mode
   :bind
-  ("C-c l" . eglot)
+  ("C-c l" . lsp)
+  ("C-c f" . lsp-format-buffer)
+  ("C-c r" . lsp-format-region)
+  :hook
+  (rust-mode . lsp)
+  (c-mode . lsp)
+  (lsp-mode . lsp-enable-which-key-integration)
   :config
-  (use-package breadcrumb
-    :config
-    (breadcrumb-mode)))
-    
-(use-package flymake)
+  (lsp-treemacs-sync-mode 1)
+  :commands lsp)
 
-(use-package sideline-flymake
-  :config
-  (use-package sideline
-    :hook (flymake-mode  . sideline-mode)
-    :init
-    (setq sideline-flymake-display-mode 'line)
-    (setq sideline-backends-right '(sideline-flymake))))
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :hook
+  (lsp-mode . lsp-ui-mode))
+
+(use-package lsp-treemacs
+  :bind
+  ([f8] . treemacs)
+  :commands lsp-treemacs-errors-list)
+
+(use-package flycheck
+  :hook
+  (lsp-mode . flycheck-mode))
+
+(use-package company
+  :hook
+  (prog-mode . company-mode))
 
 (use-package yasnippet
   :hook
   (prog-mode . yas-minor-mode))
 
-(use-package company
-  :hook
-  (prog-mode . company-mode))
+
+;; Configure automatic backups
+(setq
+ backup-by-copying t ; don't clobber symlinks
+ backup-directory-alist
+ '(("." . "~/.emacsbackups/")) ; don't litter my fs tree
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t)
+
+
+(setq c-default-style "linux"
+      c-basic-offset 4)
+(setq-default indent-tabs-mode nil)
 
 
 (provide '.emacs)
